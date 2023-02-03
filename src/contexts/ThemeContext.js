@@ -1,4 +1,4 @@
-import React, { useState, createContext } from "react";
+import React, { useState, useEffect, createContext } from "react";
 
 export const ThemeContext = createContext();
 
@@ -8,16 +8,18 @@ export default function ThemeContextProvider(props) {
   const [dark, setDark] = useState({ text: "#ddd", ui: "#333", bg: "#555" });
 
   const toggleTheme = () => {
-    setIsLightTheme(!isLightTheme);
+    setIsLightTheme((prev) => !prev);
   };
 
-  function fetchDataEvery5min() {
-    setInterval(() => {
+  useEffect(() => {
+    const intervalID = setInterval(() => {
       toggleTheme();
     }, 3000);
-  }
 
-  fetchDataEvery5min();
+    return () => {
+      clearInterval(intervalID);
+    };
+  }, []);
 
   return (
     <ThemeContext.Provider value={{ isLightTheme, light, dark, toggleTheme }}>
